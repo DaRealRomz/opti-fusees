@@ -12,6 +12,7 @@ export const SelectFusee: React.FC<SelectFuseeProps> = ({setFusee}) => {
         <option value={0}>Fusée 1</option>
         <option value={1}>Fusée 2</option>
         <option value={2}>Fusée 3</option>
+        <option value={3}>Fusée 4</option>
       </select>
     </div>
   );
