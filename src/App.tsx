@@ -1,13 +1,14 @@
+import { Route, Routes } from "react-router";
 import "./App.css";
 import { BarreCO2 } from "./components/BarreCO2";
+import { VueInitiale } from "./pages/VueInitiale";
 
 function App() {
   return (
-    <>
-      <div>
-        <BarreCO2 progres={0.5} limit={"8T CO2 e.q."} />
-      </div>
-    </>
+    <Routes>
+      <Route path="/" element={<VueInitiale />} />
+      <Route path="/barre-co2" element={<BarreCO2 progres={0.5} limit="50%" />} />
+    </Routes>
   );
 }
 
