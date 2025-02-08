@@ -13,14 +13,14 @@ const PageNiveaux = () => {
         <h1 className="niveaux-title">Opti Fusées</h1>
         <h2 className='niveaux-sous-title'>Niveaux</h2>
         <div className="niveaux-buttons">
-          <button className="niveaux-button" onClick={() => naviguer("/editeur")}>
-            Niveaux 1
+          <button className="niveaux-button" onClick={() => naviguer("/editeur?niveau=1")}>
+            <span className="text-button">1</span>
           </button>
-          <button className="niveaux-button" onClick={() => naviguer("/editeur")}>
-            Niveau 2
+          <button className="niveaux-button" onClick={() => naviguer("/editeur?niveau=2")}>
+          <span className="text-button">2</span>
           </button>
-          <button className="niveaux-button" onClick={() => naviguer("/editeur")}>
-            Niveau 3
+          <button className="niveaux-button" onClick={() => naviguer("/editeur?niveau=3")}>
+          <span className="text-button">3</span>
           </button>
         </div>
       </div>

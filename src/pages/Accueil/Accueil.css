@@ -19,7 +19,7 @@
 .accueil-title {
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #000;
-  font-size: 2.5rem;
+  font-size: 6rem;
   font-weight: bold;
   font-family: "Knewave";
   margin-bottom: 2rem;
@@ -29,6 +29,7 @@
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
+  animation: pulse 3s infinite ease-in-out;
 }
 
 
@@ -37,7 +38,7 @@
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #000;
   font-family: "Knewave";
-  font-size : 1.5rem;
+  font-size : 4rem;
   line-height: normal;
   background-color: transparent;
   cursor: pointer;
@@ -47,4 +48,16 @@
 .accueil-button:hover {
   color: #000;
   -webkit-text-stroke-color: #fff;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
 }
