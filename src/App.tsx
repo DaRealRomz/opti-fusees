@@ -1,12 +1,14 @@
+import { Route, Routes } from "react-router";
 import "./App.css";
-import React from "react";
-import PageInitial from "./composants/Accueil";
+import { BarreCO2 } from "./components/BarreCO2";
+import PageInitiale from "./pages/Accueil/Accueil";
 
 function App() {
   return (
-    <>
-      <PageInitial />
-    </>
+    <Routes>
+      <Route path="/" element={<PageInitiale />} />
+      <Route path="/barre-co2" element={<BarreCO2 progres={0.5} limit="50%" />} />
+    </Routes>
   );
 }
 
