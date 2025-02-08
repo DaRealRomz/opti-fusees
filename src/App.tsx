@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router";
-import "./App.css";
 import { BarreCO2 } from "./components/BarreCO2";
 import PageInitiale from "./pages/Accueil/Accueil";
 
