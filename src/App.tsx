@@ -1,12 +1,11 @@
 import { Route, Routes } from "react-router";
-import "./App.css";
-import { VueInitiale } from "./pages/VueInitiale";
+import PageInitiale from "./pages/Accueil/Accueil";
 import { Editeur } from "./pages/Editeur/Editeur";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<VueInitiale />} />
+      <Route path="/" element={<PageInitiale />} />
       <Route path="/editeur" element={<Editeur />} />
     </Routes>
   );
