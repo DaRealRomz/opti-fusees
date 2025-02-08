@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router";
 import "./App.css";
 import { VueInitiale } from "./pages/VueInitiale";
-import { Editeur } from "./pages/Editeur";
+import { Editeur } from "./pages/Editeur/Editeur";
 
 function App() {
   return (
