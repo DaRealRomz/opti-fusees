@@ -29,7 +29,7 @@ class Vector2 {
   }
 }
 
-class Engine {
+export class Engine {
   rocket?: Rocket;
   alpha = 0;
 
@@ -55,7 +55,7 @@ class Engine {
   }
 }
 
-class Rocket {
+export class Rocket {
   time = 0;
   position = new Vector2(0, EARTH_RADIUS);
   speed = new Vector2(0, 1e-9);
