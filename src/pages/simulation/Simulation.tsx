@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { BarreCO2 } from "../../components/BarreCO2";
 import imageTerre from "./images/terre.png";
-import { EARTH_RADIUS, Rocket } from "./simulator";
+import { EARTH_RADIUS, falcon9 } from "./simulator";
 import { rockets } from "../../Constantes/rockets";
 
 const emissionsParKgConsomme: number[] = [2.75, 0.5, 3.1];
 
 export function Simulation() {
   const [position, setPosition] = useState({ x: 0, y: EARTH_RADIUS });
+  const [color, setColor] = useState("yellow");
   const [co2, setCo2] = useState(0);
 
   const params = new URLSearchParams(window.location.search);
@@ -15,14 +16,15 @@ export function Simulation() {
   const emissions = emissionsParKgConsomme[parseInt(params.get("carburant") ?? "0")];
 
   useEffect(() => {
-    const fusee = new Rocket(rocket.mass, rocket.engines, rocket.diameter, rocket.dragCoefficient, rocket.burnTime);
+    const fusee = falcon9;
     const interval = setInterval(() => {
       for (let i = 0; i < 10; i++) fusee.step();
       setPosition(fusee.position);
-      setCo2((rocket.mass - fusee.mass) * emissions);
-    }, 1000 / 10);
+      setColor(fusee.burning ? "limegreen" : "red");
+      setCo2(fusee.burnedFuel * emissions);
+    }, 1);
     return () => clearInterval(interval);
-  }, [emissions, rocket.burnTime, rocket.diameter, rocket.dragCoefficient, rocket.engines, rocket.mass]);
+  }, [emissions]);
 
   return (
     <div className="w-full h-screen bg-linear-to-b from-[#2c2c2c] to-[#000000]">
@@ -34,15 +36,16 @@ export function Simulation() {
         />
         <div
           style={{ height: "calc(70vh * 1.0624)", width: "calc(70vh * 1.0624)" }}
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white border-dotted"
         ></div>
         <div
           style={{
             transform: `translate(calc(-50% + 35vh * ${position.x / EARTH_RADIUS}), calc(50% - 35vh * ${
               position.y / EARTH_RADIUS
             }))`,
+            backgroundColor: color,
           }}
-          className="h-1 w-1 absolute rounded-full bg-amber-300 top-1/2 left-1/2"
+          className="h-2 w-2 absolute rounded-full top-1/2 left-1/2"
         ></div>
       </div>
     </div>

@@ -31,11 +31,11 @@ class Vector2 {
 
 export class Engine {
   rocket?: Rocket;
-  alpha = 0;
 
   constructor(
     public Isp: number, // Specific impulse (s)
-    public maxThrust: number // Maximum thrust (N)
+    public maxThrust: number, // Maximum thrust (N)
+    public alpha = 0
   ) {}
 
   thrust(): number {
@@ -59,6 +59,8 @@ export class Rocket {
   time = 0;
   position = new Vector2(0, EARTH_RADIUS);
   speed = new Vector2(0, 1e-9);
+  angle = 0;
+  burnedFuel = 0;
 
   constructor(
     public mass: number, // kg
@@ -80,6 +82,7 @@ export class Rocket {
     this.speed = this.speed.add(this.acceleration().multiply(dt));
     this.position = this.position.add(this.speed.multiply(dt));
     this.mass -= dm;
+    this.burnedFuel += dm;
     this.time += dt;
   }
 
@@ -88,7 +91,7 @@ export class Rocket {
   }
 
   force() {
-    return this.thrust().add(this.drag()).add(this.gravity());
+    return this.thrust().add(this.gravity());
   }
 
   g() {
@@ -96,13 +99,21 @@ export class Rocket {
   }
 
   mDot() {
-    return this.engines.reduce((acc, engine) => acc + engine.mDot(), 0);
+    return this.time > this.burnTime ? 0 : this.engines.reduce((acc, engine) => acc + engine.mDot(), 0);
   }
 
   thrust() {
     if (this.time > this.burnTime) return new Vector2();
+
     const thrust = this.engines.reduce((acc, engine) => acc + engine.thrust(), 0);
-    return this.speed.unit().multiply(thrust);
+    const thrustVector = new Vector2(0, thrust);
+    if (this.altitude() < 10000) return thrustVector;
+
+    const targetAngle = Math.atan2(-this.position.y, -this.position.x);
+    const targetChange = targetAngle - this.angle;
+    const maxChange = 0.0011;
+    this.angle += Math.max(-maxChange, Math.min(targetChange, maxChange));
+    return thrustVector.rotate(this.angle);
   }
 
   gravity() {
@@ -139,10 +150,45 @@ export class Rocket {
   }
 }
 
-const engines = Array.from({ length: 9 }, () => new Engine(282, 845e3));
-const rocket = new Rocket(549054, engines, 3.7, 0.75, 160200);
+export class MultiStageRocket {
+  i = 0;
+  pastTime = 0;
 
-do {
-  rocket.step();
-  console.log(rocket.position.x.toFixed(20) + "\t" + rocket.position.y.toFixed(20));
-} while (rocket.altitude() >= 0);
+  constructor(public stages: Rocket[], public stageTimes: number[]) {}
+
+  get position() {
+    return this.stages[this.i].position;
+  }
+
+  get burnedFuel() {
+    return this.stages.reduce((acc, stage) => acc + stage.burnedFuel, 0);
+  }
+
+  get time() {
+    return this.pastTime + this.stages[this.i].time;
+  }
+
+  get burning() {
+    return this.stages[this.i].time < this.stages[this.i].burnTime;
+  }
+
+  step() {
+    if (this.time > this.stageTimes[this.i]) this.stage();
+    this.stages[this.i].step();
+  }
+
+  stage(): void {
+    const stage = this.stages[this.i];
+    const nextStage = this.stages[this.i + 1];
+    nextStage.position = stage.position;
+    nextStage.speed = stage.speed;
+    nextStage.angle = stage.angle;
+    this.pastTime += stage.time;
+    this.i++;
+  }
+}
+
+export const falcon9 = new MultiStageRocket([
+  new Rocket(549054, Array.from({ length: 9 }, () => new Engine(282, 845e3)), 3.7, 0.75, 167),
+  new Rocket(26700 + 92670, [new Engine(311, 981e3, 0.3)], 3.7, 0.75, 327),
+], [245]);
