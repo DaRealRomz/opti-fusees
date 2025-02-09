@@ -5,6 +5,7 @@ import imagePlateforme from "./images/plateforme.png";
 import imageSol from "./images/sol.png";
 import { SelectCarburant } from "../../components/SelectCarburant";
 import { Link } from "react-router";
+import { rockets } from "../../Constantes/rockets";
 
 export function Editeur() {
   const [fusee, setFusee] = useState(0);
@@ -16,7 +17,7 @@ export function Editeur() {
   return (
     <div className="w-full h-screen bg-linear-to-b from-[#51B6FF] to-[#92FFFD]">
       <div className="py-4">
-        <BarreCO2 limite={8} utilise={3} />
+        <BarreCO2 addedCo2={rockets[fusee].manufacturingCo2} utilise={0} />
       </div>
       <SelectFusee setFusee={setFusee} />
       <SelectCarburant setCarburant={setCarburant} />
