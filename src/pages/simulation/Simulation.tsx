@@ -12,15 +12,15 @@ export function Simulation() {
         <BarreCO2 limite={8} utilise={3} />
         <img
           src={imageTerre}
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[50vh] rounded-full border-2 border-blue-500 rotate-[120deg]"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[70vh] rounded-full border-2 border-blue-500 rotate-[120deg]"
         />
         <div
-          style={{ height: "calc(50vh * 1.0624)", width: "calc(50vh * 1.0624)" }}
+          style={{ height: "calc(70vh * 1.0624)", width: "calc(70vh * 1.0624)" }}
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white"
         ></div>
         <div
           style={{
-            transform: `translate(calc(-50% + 25vh * ${position.x / EARTH_RADIUS}), calc(50% - 25vh * ${
+            transform: `translate(calc(-50% + 35vh * ${position.x / EARTH_RADIUS}), calc(50% - 35vh * ${
               position.y / EARTH_RADIUS
             }))`,
           }}
