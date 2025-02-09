@@ -1,5 +1,5 @@
 const G = 6.6743e-11;
-const EARTH_RADIUS = 6378e3;
+export const EARTH_RADIUS = 6378e3;
 
 class Vector2 {
   constructor(public x = 0, public y = 0) {}
