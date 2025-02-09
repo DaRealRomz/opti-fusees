@@ -1,8 +1,37 @@
 const G = 6.6743e-11;
+const EARTH_RADIUS = 6378e3;
+
+class Vector2 {
+  constructor(public x = 0, public y = 0) {}
+
+  magnitude() {
+    return Math.sqrt(this.x ** 2 + this.y ** 2);
+  }
+
+  unit() {
+    const mag = this.magnitude();
+    return new Vector2(this.x / mag, this.y / mag);
+  }
+
+  add(other: Vector2) {
+    return new Vector2(this.x + other.x, this.y + other.y);
+  }
+
+  multiply(scalar: number) {
+    return new Vector2(this.x * scalar, this.y * scalar);
+  }
+
+  rotate(angle: number) {
+    return new Vector2(
+      this.x * Math.cos(angle) - this.y * Math.sin(angle),
+      this.x * Math.sin(angle) + this.y * Math.cos(angle)
+    );
+  }
+}
 
 class Engine {
   rocket?: Rocket;
-  alpha = 0.2;
+  alpha = 0;
 
   constructor(
     public Isp: number, // Specific impulse (s)
@@ -28,8 +57,8 @@ class Engine {
 
 class Rocket {
   time = 0;
-  height = 0;
-  speed = 0;
+  position = new Vector2(0, EARTH_RADIUS);
+  speed = new Vector2(0, 1e-9);
 
   constructor(
     public mass: number, // kg
@@ -48,22 +77,22 @@ class Rocket {
   step() {
     const dt = 0.1; // Time step in seconds
     const dm = this.mDot() * dt;
-    this.speed += this.acceleration() * dt;
-    this.height += this.speed * dt;
+    this.speed = this.speed.add(this.acceleration().multiply(dt));
+    this.position = this.position.add(this.speed.multiply(dt));
     this.mass -= dm;
     this.time += dt;
   }
 
   acceleration() {
-    return this.force() / this.mass;
+    return this.force().multiply(1 / this.mass);
   }
 
   force() {
-    return this.thrust() - this.drag() - this.gravity();
+    return this.thrust().add(this.drag()).add(this.gravity());
   }
 
   g() {
-    return (G * 5.9722e24) / Math.pow(6378e3 + this.height, 2);
+    return (G * 5.9722e24) / Math.pow(this.position.magnitude(), 2);
   }
 
   mDot() {
@@ -71,38 +100,49 @@ class Rocket {
   }
 
   thrust() {
-    return this.time < this.burnTime ? this.engines.reduce((acc, engine) => acc + engine.thrust(), 0) : 0;
+    if (this.time > this.burnTime) return new Vector2();
+    const thrust = this.engines.reduce((acc, engine) => acc + engine.thrust(), 0);
+    return this.speed.unit().multiply(thrust);
   }
 
   gravity() {
-    return this.mass * this.g();
+    const force = this.mass * this.g();
+    return this.position.unit().multiply(-force);
   }
 
   drag() {
-    return 0.5 * this.dragCoefficient * this.airDensity() * Math.pow(this.speed, 2) * this.crossSectionalArea;
+    const drag =
+      0.5 * this.dragCoefficient * this.airDensity() * Math.pow(this.speed.magnitude(), 2) * this.crossSectionalArea;
+    return this.speed.unit().multiply(-drag);
   }
 
   airDensity() {
     return this.airPressure() / (287.05 * (15.04 + 273.15));
   }
 
+  altitude() {
+    return this.position.magnitude() - EARTH_RADIUS;
+  }
+
   airPressure() {
-    if (this.height > 25000) {
-      const T = -131.21 + 0.00299 * this.height;
+    const altitude = this.altitude();
+
+    if (altitude > 25000) {
+      const T = -131.21 + 0.00299 * altitude;
       return 2.488 * Math.pow((T + 273.1) / 216.6, -11.388);
-    } else if (this.height > 11000) {
-      return 22.65 * Math.exp(1.73 - 0.000157 * this.height);
+    } else if (altitude > 11000) {
+      return 22.65 * Math.exp(1.73 - 0.000157 * altitude);
     } else {
-      const T = 15.04 - 0.00649 * this.height;
+      const T = 15.04 - 0.00649 * altitude;
       return 101.29 * Math.pow((T + 273.1) / 288.08, 5.256);
     }
   }
 }
 
 const engines = Array.from({ length: 9 }, () => new Engine(282, 845e3));
-const rocket = new Rocket(549054, engines, 3.7, 0.75, 162);
+const rocket = new Rocket(549054, engines, 3.7, 0.75, 160200);
 
 do {
   rocket.step();
-  console.log(rocket.time + "\t" + rocket.height);
-} while (rocket.height >= 0);
+  console.log(rocket.position.x.toFixed(20) + "\t" + rocket.position.y.toFixed(20));
+} while (rocket.altitude() >= 0);
