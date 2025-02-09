@@ -10,10 +10,69 @@
   background-image: url('./imageAccueil.png');
   background-size: cover;
   background-position: center;
-  color: white;
   padding-top : 60px;
   position: relative;
+  transition: background-color 1.5s ease-in-out;
 }
+
+.niveaux-container.stars-active {
+  background-image: none;
+  background-color: black;
+  transition: background-color 1.5s ease-in-out;
+}
+
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeIn 4s ease-in-out 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Individual Stars */
+.star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: starMove linear infinite;
+}
+
+@keyframes starMove {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(200vh) scale(3.5);
+    opacity: 0;
+  }
+}
+
+.niveaux-container.hidden .niveaux-title,
+.niveaux-container.hidden .niveaux-sous-title,
+.niveaux-container.hidden .niveaux-buttons,
+.niveaux-container.hidden .Retour-button {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease-in-out;
+}
+
 
 .niveaux-title {
   -webkit-text-stroke-width: 1px;
@@ -29,6 +88,7 @@
   transform: translateX(-50%);
   white-space: nowrap;
   animation: pulse 3s infinite ease-in-out;
+  color: white;
 }
 
 .niveaux-sous-title {
@@ -44,6 +104,16 @@
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
+  color : white;
+}
+
+.niveaux-title, .niveaux-sous-title {
+  text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6);
+}
+
+.niveaux-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .Retour-button {
