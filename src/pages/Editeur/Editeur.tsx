@@ -24,8 +24,10 @@ export function Editeur() {
       <img className="w-[200px] absolute bottom-[200px] left-[900px] z-10" src={imageCarburant()} />
       <img className="h-[150px] w-full absolute bottom-0 object-cover" src={imageSol} />
       <img className="h-[340px] absolute bottom-0 left-[300px]" src={imagePlateforme} />
-      <Link to={"/simulation"} className="absolute bottom-0 right-0 p-5 m-5 font-bold text-lg text-white bg-[#910000] rounded-full hover:bg-[#a65252] transition-all">
-        Décollage !
+      <Link to={"/simulation"}>
+        <button className="absolute bottom-0 right-0 p-5 m-5 font-bold text-lg text-white bg-[#910000] rounded-full hover:bg-[#a65252] transition-all">
+          Décollage !
+        </button>
       </Link>
     </div>
   );
